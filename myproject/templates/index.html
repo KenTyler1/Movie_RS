@@ -1,0 +1,558 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="{% static './assets/images/icon.png' %}" type="image/png">
+  <title>Movies Recommender System</title>
+
+  <!--
+    - custom css link
+  -->
+  <link rel="stylesheet" href="{% static './assets/css/main.css' %}">
+  <link rel="stylesheet" href="{% static './assets/css/media_query.css' %}">
+
+  <!--
+    - google font link
+  -->
+  <link href="{% static 'https://fonts.googleapis.com/css?family=Inter:100,200,300,regular,500,600,700,800,900' %}" rel="stylesheet" />
+</head>
+
+<body>
+
+
+
+
+  <!--
+    - main container
+  -->
+  <div class="container">
+
+    <!--
+      - #HEADER SECTION
+    -->
+
+    <header class="">
+      <div class="navbar">
+
+        <!--
+          - menu button for small screen
+        -->
+        <button class="navbar-menu-btn">
+          <span class="one"></span>
+          <span class="two"></span>
+          <span class="three"></span>
+        </button>
+
+
+        <a href="#" class="navbar-brand">
+          <img src="{% static './assets/images/logo.png' %}" alt="">
+        </a>
+
+        <!--
+          - navbar navigation
+        -->
+
+        <nav class="">
+          <ul class="navbar-nav">
+
+            <li> <a href="/" class="navbar-link">Home</a> </li>
+            <li> <a href="#category" class="navbar-link">Category</a> </li>
+            <li> <a href="#live" class="navbar-link  indicator">LIVE</a> </li>
+
+          </ul>
+        </nav>
+
+        <!--
+          - search and sign-in
+        -->
+
+        <div class="navbar-actions">
+
+          <form action="" class="navbar-form" method="post">
+            {% csrf_token %}
+            <input list="movies" name="search"  placeholder="Bạn đang tìm kiếm gì..." class="navbar-form-search">
+            <datalist id="movies">
+              {% for m in movies_list %}
+              <option value="{{m}}">
+              {% endfor %}
+            </datalist>
+            <button class="navbar-form-btn">
+              <ion-icon name="search-outline"></ion-icon>
+            </button>
+
+            <button class="navbar-form-close">
+              <ion-icon name="close-circle-outline"></ion-icon>
+            </button>
+          </form>
+
+          <!--
+            - search button for small screen
+          -->
+
+          <button class="navbar-search-btn">
+            <ion-icon name="search-outline"></ion-icon>
+          </button>
+          {% if user.is_authenticated %}
+          <span style="margin-right: 5px;">Chào mừng, {{user.username}}</span>
+          {% endif %}
+
+          {% if user.is_authenticated %}
+          <a href="logout" class="navbar-signin">
+            <span>Logout</span>
+            <ion-icon name="log-in-outline"></ion-icon>
+          </a>
+          {% else %}
+          <a href="/login_register" class="navbar-signin">
+            <span>Sign in</span>
+            <ion-icon name="log-in-outline"></ion-icon>
+          </a>
+          {% endif %}
+        </div>
+
+      </div>
+    </header>
+
+
+
+
+
+    <!--
+      - MAIN SECTION
+    -->
+    <main>
+
+      <!--
+        - #BANNER SECTION
+      -->
+      <section class="banner">
+        <div class="banner-card">
+
+          <img src="{% static './assets/images/John-Wick-3.jpg' %}" class="banner-img" alt="">
+
+          <div class="card-content">
+            <div class="card-info">
+
+              <div class="genre">
+                <ion-icon name="film"></ion-icon>
+                <span>Action/Thriller</span>
+              </div>
+
+              <div class="year">
+                <ion-icon name="calendar"></ion-icon>
+                <span>2019</span>
+              </div>
+
+              <div class="duration">
+                <ion-icon name="time"></ion-icon>
+                <span>2h 11m</span>
+              </div>
+
+              <div class="quality">4K</div>
+
+            </div>
+            
+            <h2 class="card-title">John Wick: Chapter 3 - Parabellum</h2>
+          </div>
+
+        </div>
+      </section>
+
+
+
+
+
+      <!--
+        - #MOVIES SECTION
+      -->
+      <section class="movies">
+
+        <!--
+          - filter bar
+        -->
+        <div class="filter-bar">
+
+          <div class="filter-dropdowns">
+
+            <select name="genre" class="genre">
+              <option value="all genres">All genres</option>
+              <option value="action">Action</option>
+              <option value="adventure">Adventure</option>
+              <option value="animal">Animal</option>
+              <option value="animation">Animation</option>
+              <option value="biography">Biography</option>
+            </select>
+
+            <select name="year" class="year">
+              <option value="all years">All the years</option>
+              <option value="2022">2022</option>
+              <option value="2020-2021">2020-2021</option>
+              <option value="2010-2019">2010-2019</option>
+              <option value="2000-2009">2000-2009</option>
+              <option value="1980-1999">1980-1999</option>
+            </select>
+
+          </div>
+
+          <div class="filter-radios">
+
+            <input type="radio" name="grade" id="featured" checked>
+            <label for="featured">Featured</label>
+
+            <input type="radio" name="grade" id="popular">
+            <label for="popular">Popular</label>
+
+            <input type="radio" name="grade" id="newest">
+            <label for="newest">Newest</label>
+
+            <div class="checked-radio-bg"></div>
+
+          </div>
+
+        </div>
+
+
+        <!--
+          - movies grid
+        -->
+
+        <div class="movies-grid">
+          {% for movie in movies %}
+          <div class="movie-card">
+
+            <div class="card-head">
+              <img src="{{ movie.img.url }}" alt="" class="card-img">
+
+              <div class="card-overlay">
+
+                <div class="bookmark">
+                  <ion-icon name="bookmark-outline"></ion-icon>
+                </div>
+
+                <div class="rating">
+                  <ion-icon name="star-outline"></ion-icon>
+                  <span>{{movie.rate}}</span>
+                </div>
+
+                <div class="play">
+                  <ion-icon name="play-circle-outline"></ion-icon>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="card-body">
+              <h3 class="card-title">{{movie.name}}</h3>
+
+              <div class="card-info">
+                <span class="genre">{{movie.cate}}</span>
+                <span class="year">{{movie.year}}</span>
+              </div>
+            </div>
+
+          </div>
+          {% endfor %}
+
+          {% for list1, list2, list3, list4, list5 in lists %}
+          <div class="movie-card">
+            <div class="card-head">
+              <img src="{{list1}}" alt="" class="card-img">
+              
+              <div class="card-overlay">
+
+                <div class="bookmark">
+                  <ion-icon name="bookmark-outline"></ion-icon>
+                </div>
+
+                <div class="rating">
+                  <ion-icon name="star-outline"></ion-icon>
+                  <span>{{list3}}</span>
+                </div>
+
+                <div class="play">
+                  <ion-icon name="play-circle-outline"></ion-icon>
+                </div>
+
+              </div>
+            </div>
+            <div class="card-body">
+              <h3 class="card-title">{{list2}}</h3>
+              <div class="card-info">
+                <span class="year">{{list4}}</span>
+              </div>
+              {% for x in list5 %}
+              <span class="genre" style="margin: 1px;">{{x}}</span>
+              {% endfor %}
+            </div>
+          <!-- Hết -->
+          </div>
+          {% endfor %}
+        </div>
+
+        <!--
+          - load more button
+        -->
+        <button class="load-more">LOAD MORE</button>
+
+      </section>
+
+
+
+
+
+      <!--
+        - #CATEGORY SECTION
+      -->
+      <section class="category" id="category">
+
+        <h2 class="section-heading">Category</h2>
+
+        <div class="category-grid">
+
+          <div class="category-card">
+            <img src="{% static './assets/images/action.jpg' %}" alt="" class="card-img">
+            <div class="name">Action</div>
+            <div class="total">100</div>
+          </div>
+
+          <div class="category-card">
+            <img src="{% static './assets/images/comedy.jpg' %}" alt="" class="card-img">
+            <div class="name">Comedy</div>
+            <div class="total">50</div>
+          </div>
+
+          <div class="category-card">
+            <img src="{% static './assets/images/thriller.webp' %}" alt="" class="card-img">
+            <div class="name">Thriller</div>
+            <div class="total">20</div>
+          </div>
+
+          <div class="category-card">
+            <img src="{% static './assets/images/horror.jpg' %}" alt="" class="card-img">
+            <div class="name">Horror</div>
+            <div class="total">80</div>
+          </div>
+
+          <div class="category-card">
+            <img src="{% static './assets/images/adventure.jpg' %}" alt="" class="card-img">
+            <div class="name">Adventure</div>
+            <div class="total">100</div>
+          </div>
+
+          <div class="category-card">
+            <img src="{% static './assets/images/animated.jpg' %}" alt="" class="card-img">
+            <div class="name">Animated</div>
+            <div class="total">50</div>
+          </div>
+
+          <div class="category-card">
+            <img src="{% static './assets/images/crime.jpg' %}" alt="" class="card-img">
+            <div class="name">Crime</div>
+            <div class="total">20</div>
+          </div>
+
+          <div class="category-card">
+            <img src="{% static './assets/images/sci-fi.jpg' %}" alt="" class="card-img">
+            <div class="name">SCI-FI</div>
+            <div class="total">80</div>
+          </div>
+
+        </div>
+
+      </section>
+
+
+
+
+
+      <!--
+        - #LIVE SECTION
+      -->
+      <section class="live" id="live">
+
+        <h2 class="section-heading">Live Tv Shows</h2>
+
+        <div class="live-grid">
+
+          <div class="live-card">
+
+            <div class="card-head">
+              <img src="{% static './assets/images/planet.jpg' %}" alt="" class="card-img">
+              <div class="live-badge">LIVE</div>
+              <div class="total-viewers">305K viewers</div>
+              <div class="play">
+                <ion-icon name="play-circle-outline"></ion-icon>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <img src="{% static './assets/images/bbcamerica.jpg' %}" alt="" class="avatar">
+              <h3 class="card-title">Planet Earth II <br> Season 1 - Islands</h3>
+            </div>
+
+          </div>
+
+          <div class="live-card">
+
+            <div class="card-head">
+              <img src="{% static './assets/images/got.jpg' %}" alt="" class="card-img">
+              <div class="live-badge">LIVE</div>
+              <div class="total-viewers">1.7M viewers</div>
+              <div class="play">
+                <ion-icon name="play-circle-outline"></ion-icon>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <img src="{% static './assets/images/HBO-Logo-square.jpg' %}" alt="" class="avatar">
+              <h3 class="card-title">Game of Thrones <br> Season 5 - Mother's Mercy</h3>
+            </div>
+
+          </div>
+
+          <div class="live-card">
+
+            <div class="card-head">
+              <img src="{% static './assets/images/vikins.jpg' %}" alt="" class="card-img">
+              <div class="live-badge">LIVE</div>
+              <div class="total-viewers">468K viewers</div>
+              <div class="play">
+                <ion-icon name="play-circle-outline"></ion-icon>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <img src="{% static './assets/images/HBO-Logo-square.jpg' %}" alt="" class="avatar">
+              <h3 class="card-title">Vikings <br> Season 4 - What Might Have Been</h3>
+            </div>
+
+          </div>
+
+        </div>
+
+      </section>
+
+    </main>
+
+
+
+
+
+    <!--
+      - FOOTER SECTION
+    -->
+    <footer>
+
+      <div class="footer-content">
+
+        <div class="footer-brand">
+          <img src="{% static './assets/images/logo.png' %}" alt="" class="footer-logo">
+          <p class="slogan">Movies & TV Shows, Online cinema,
+            Movie database HTML Template.</p>
+
+
+          <div class="social-link">
+
+            <a href="#">
+              <ion-icon name="logo-facebook"></ion-icon>
+            </a>
+            <a href="#">
+              <ion-icon name="logo-twitter"></ion-icon>
+            </a>
+            <a href="#">
+              <ion-icon name="logo-instagram"></ion-icon>
+            </a>
+            <a href="#">
+              <ion-icon name="logo-tiktok"></ion-icon>
+            </a>
+            <a href="#">
+              <ion-icon name="logo-youtube"></ion-icon>
+            </a>
+
+          </div>
+        </div>
+
+
+        <div class="footer-links">
+          <ul>
+
+            <h4 class="link-heading">CineFlix</h4>
+
+            <li class="link-item"><a href="#">About us</a></li>
+            <li class="link-item"><a href="#">My profile</a></li>
+            <li class="link-item"><a href="#">Pricing plans</a></li>
+            <li class="link-item"><a href="#">Contacts</a></li>
+
+          </ul>
+
+          <ul>
+
+            <h4 class="link-heading">Browse</h4>
+
+            <li class="link-item"><a href="#">Live Tv</a></li>
+            <li class="link-item"><a href="#">Live News</a></li>
+            <li class="link-item"><a href="#">Live Sports</a></li>
+            <li class="link-item"><a href="#">Streaming Library</a></li>
+
+          </ul>
+
+          <ul>
+
+            <li class="link-item"><a href="#">TV Shows</a></li>
+            <li class="link-item"><a href="#">Movies</a></li>
+            <li class="link-item"><a href="#">Kids</a></li>
+            <li class="link-item"><a href="#">Collections</a></li>
+
+          </ul>
+
+          <ul>
+
+            <h4 class="link-heading">Help</h4>
+
+            <li class="link-item"><a href="#">Account & Billing</a></li>
+            <li class="link-item"><a href="#">Plans & Pricing</a></li>
+            <li class="link-item"><a href="#">Supported devices</a></li>
+            <li class="link-item"><a href="#">Accessibility</a></li>
+
+          </ul>
+        </div>
+
+      </div>
+
+      <div class="footer-copyright">
+
+        <div class="copyright">
+          <p>&copy; copyright 2021 CineFlix</p>
+        </div>
+
+        <div class="wrapper">
+          <a href="#">Privacy policy</a>
+          <a href="#">Terms and conditions</a>
+        </div>
+
+      </div>
+
+    </footer>
+
+  </div>
+
+
+
+
+
+  <!--
+    - custom js link
+  -->
+  <script src="{% static './assets/js/main.js' %}"></script>
+
+  <!--
+    - ionicon link
+  -->
+  <script type="module" src="{% static 'https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js' %}"></script>
+  <script nomodule src="{% static 'https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js' %}"></script>
+</body>
+
+</html>
